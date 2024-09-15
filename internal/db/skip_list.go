@@ -25,7 +25,7 @@ func NewSkipList() *SkipList {
 	return &SkipList{head: head, levels: 1}
 }
 
-func (s *SkipList) ZAdd(key string, score string, member string) {
+func (s *SkipList) ZAdd(score string, member string) {
 	update := make([]*SkipNode, MaxLevel)
 	x := s.head
 
@@ -57,21 +57,17 @@ func (s *SkipList) ZAdd(key string, score string, member string) {
 	}
 }
 
-func (s *SkipList) ZRange(key string, start int, end int) []string {
+func (s *SkipList) ZRange() []string {
 	result := []string{}
 	x := s.head.forward[0]
-	for i := 0; i < start && x != nil; i++ {
-		x = x.forward[0]
-	}
-
-	for i := start; i <= end && x != nil; i++ {
+	for x != nil {
 		result = append(result, x.member)
 		x = x.forward[0]
 	}
 	return result
 }
 
-func (s *SkipList) ZScore(key string, member string) (string, bool) {
+func (s *SkipList) ZScore(member string) (string, bool) {
 	x := s.head.forward[0]
 	for x != nil {
 		if x.member == member {
@@ -82,7 +78,7 @@ func (s *SkipList) ZScore(key string, member string) (string, bool) {
 	return "", false
 }
 
-func (s *SkipList) ZRank(key string, member string) (int, bool) {
+func (s *SkipList) ZRank(member string) (int, bool) {
 	rank := 0
 	x := s.head.forward[0]
 	for x != nil {
@@ -107,7 +103,7 @@ func compareScores(score1, score2 string) int {
 }
 
 func randomLevel() int {
-	rand.Seed(time.Now().UnixNano())
+	rand.NewSource(time.Now().UnixNano())
 	level := 1
 	for rand.Float64() < 0.5 && level < MaxLevel {
 		level++

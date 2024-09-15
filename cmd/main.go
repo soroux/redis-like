@@ -89,8 +89,8 @@ func processCommand(rdb *db.RedisLikeDB, command string) {
 		fmt.Printf("Member '%s' with score '%s' added to sorted set '%s'\n", member, score, key)
 
 	case "ZRANGE":
-		// Additional implementation needed for start and end range parsing
-		// Add similar command processing as above for ZRANGE
+		members := commands.ZRangeCommand(rdb, key)
+		fmt.Printf("Members in sorted set '%s': %v\n", key, members)
 
 	case "ZSCORE":
 		if len(parts) < 3 {
